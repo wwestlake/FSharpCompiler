@@ -163,6 +163,10 @@ module Model =
     let left_arrow               : Parser<_> = pstring "<-"
     let lambda                   : Parser<_> = pstring ",\\"
     
+    // comments
+    let line_comment             : Parser<_> = pstring "//"
+    let block_comment_start      : Parser<_> = pstring "/*"
+    let block_comment_end        : Parser<_> = pstring "*/"
 
 
 
