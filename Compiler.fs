@@ -8,12 +8,16 @@ module Model =
 
     type UserState = 
             {
+                name: string
                 symbols: Map<string, obj>
                 children: UserState list
+                parent: UserState option
             }
-              with static member create () = {
+              with static member create (name) = {
+                            name = name
                             symbols = Map.empty
                             children = []
+                            parent = None
                           }
                    member x.addSymbol(name, value) = {
                                         x with
@@ -23,7 +27,18 @@ module Model =
                                         x with
                                             children = newState :: x.children
                                         }                
+                   member x.createChild(parent, name) = 
+                                        let newChild = 
+                                            {
+                                                name = name
+                                                symbols = Map.empty
+                                                children = []
+                                                parent = Some parent
+                                            }
+                                        x.addChild(newChild) |> ignore
+                                        newChild
 
+                   member x.popState () = x.parent
 
     type Parser<'t> = Parser<'t, UserState>
 
@@ -167,7 +182,6 @@ module Model =
     let line_comment             : Parser<_> = pstring "//"
     let block_comment_start      : Parser<_> = pstring "/*"
     let block_comment_end        : Parser<_> = pstring "*/"
-
 
 
 
